@@ -4,3 +4,6 @@ extend-exclude = ["lab04-ai-coding-ux"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
