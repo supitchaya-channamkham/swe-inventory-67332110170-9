@@ -56,3 +56,37 @@ def test_low_stock_items_threshold_zero(sample_inventory):
 def test_low_stock_items_negative_threshold(sample_inventory):
     result = sample_inventory.low_stock_items(-5)
     assert result == []
+
+# --- ขั้นที่ 4: เสริม Test กรณีขอบและ Error ของเมธอด sell ---
+
+
+def test_sell_exact_stock_remaining_zero(sample_inventory):
+    """ค่าขอบ: ขายหมดเกลี้ยงพอดี สต็อกต้องเหลือ 0"""
+    # ดินสอมี 2 ชิ้น ขาย 2 ชิ้น
+    sample_inventory.sell("ดินสอ", 2)
+    assert sample_inventory._items["ดินสอ"].quantity == 0
+
+
+def test_sell_negative_quantity(sample_inventory):
+    """ค่าที่ไม่ควรรับ: ขายจำนวนติดลบ ต้องเกิด ValueError"""
+    with pytest.raises(ValueError, match="จำนวนที่ขายต้องมากกว่าศูนย์"):
+        sample_inventory.sell("ปากกา", -1)
+
+
+def test_sell_zero_quantity(sample_inventory):
+    """ค่าที่ไม่ควรรับ: ขายจำนวน 0 ต้องเกิด ValueError"""
+    with pytest.raises(ValueError, match="จำนวนที่ขายต้องมากกว่าศูนย์"):
+        sample_inventory.sell("ปากกา", 0)
+
+
+def test_sell_item_not_found(sample_inventory):
+    """เส้นทาง error: ขายสินค้าที่ไม่มีในระบบ ต้องเกิด KeyError"""
+    with pytest.raises(KeyError, match="ไม่พบสินค้า"):
+        sample_inventory.sell("ไม้บรรทัด", 1)
+
+
+def test_sell_exceed_available_quantity(sample_inventory):
+    """เส้นทาง error: ขายเกินจำนวนที่มี ต้องเกิด ValueError"""
+    # ปากกามี 5 ชิ้น ขาย 10 ชิ้น
+    with pytest.raises(ValueError, match="ไม่เพียงพอ"):
+        sample_inventory.sell("ปากกา", 10)
