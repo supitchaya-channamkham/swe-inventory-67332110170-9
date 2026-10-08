@@ -58,3 +58,5 @@ class Inventory:
             if item.quantity <= threshold
         ]
         return sorted(matched)
+
+    # Lab 5: TDD and CI setup completed
